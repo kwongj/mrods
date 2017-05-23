@@ -1,7 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Script by JK
-
-from __future__ import print_function
 
 # Modules
 import argparse
@@ -15,29 +13,28 @@ from Bio.Blast.Applications import NcbiblastnCommandline
 
 # Use BLAST to check if query sequence is present in genome
 def blast_check(query, ref):
-	with tempfile.TemporaryDirectory() as dirpath:		# Note python3 syntax
+	with tempfile.TemporaryDirectory() as dirpath:
 		blastdbpath = os.path.join(dirpath, 'ref')
 		# Create BLAST DB
-#		print('makeblastdb -in {} -out {} -dbtype nucl'.format(ref, blastdbpath))
 		proc = subprocess.Popen(['makeblastdb', '-in', ref, '-out', blastdbpath, '-dbtype', 'nucl'], stdout=subprocess.PIPE)
 		procOUT = proc.communicate()[0]
 		# Run NCBI blastn
 		fBLAST = NcbiblastnCommandline(query=query, db=blastdbpath, outfmt='6', perc_identity='90', qcov_hsp_perc='70')
 		stdout, stderr = fBLAST()
-		return stdout
+		return stdout.strip()
 
 # Check if file is in FASTA format
 def check_fasta(f):
 	if not os.path.isfile(f) or os.path.getsize(f) < 1:
 		return False
 	with open(f, 'r') as fasta:
-		if fasta.readline()[0] != '>':
+		if fasta.readline()[0] != '>':						# Check if header starts with ">"
 			return False
 		for line in fasta:
 			line = line.strip()
-			if not line or line[0] == '>':
+			if not line or line[0] == '>':	
 				continue
-			if bool(re.search('[^ACTGactg]', line)):
+			if bool(re.search('[^ACTGactgNn\-]', line)):	# Check if there are non-nucleotide characters in sequence
 				return False
 	return True
 
@@ -56,8 +53,9 @@ def main():
 	for f in args.fasta:
 		# Check input file is FASTA format
 		if check_fasta(f) != True:
-			print('{}\tERROR: Check file exists and is in FASTA nucleotide format.'.format(f))
+			print('{}\tERROR: Check file exists in FASTA nucleotide format, and does not contain non-nucleotide characters other than "N" or "-".'.format(f))
 			continue
+		# Run blast_check
 		output = blast_check(args.query[0], f)
 		print(output)
 
