@@ -18,7 +18,7 @@ Genomes are often compared on the basis of their shared genome content - the "co
 inversions.
 
 **The proposed solution:**  
-The basic concept is to quickly identify regions that may be of interest (either syntenic or differing regions) between N genomes, and output the results in a 
+The basic concept is to quickly identify regions that may be of interest (either syntenic or differing regions) between *N* genomes, and output the results in a 
 format amenable to quick visualisation e.g. table, SVG.
 
 ## Bugs
