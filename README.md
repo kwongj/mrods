@@ -1,5 +1,5 @@
 # mrods
-Microbial Regions Of Difference / Synteny (RODS) - ABPHM17 Hackathon project
+Microbial Regions Of Difference / Synteny (MRODS) - ABPHM17 Hackathon project
 
 ## Collaborators
 
